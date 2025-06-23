@@ -17,7 +17,7 @@ class UserRepository {
           .then((value) => debugPrint("User saved succesfully"));
       return Success(data: user);
     } catch (e) {
-      return Failure(message: e.toString());
+      return Failure(message: 'user saving failed : $e');
     }
   }
 

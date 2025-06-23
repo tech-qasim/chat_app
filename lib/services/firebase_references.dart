@@ -1,4 +1,4 @@
-import 'package:chat_app/constant/firebase_constants.dart';
+import 'package:chat_app/constants/firebase_constants.dart';
 import 'package:chat_app/models/chat_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

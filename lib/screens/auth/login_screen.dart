@@ -1,13 +1,22 @@
+import 'package:chat_app/constants/extension_constants.dart';
+import 'package:chat_app/models/response.dart';
+import 'package:chat_app/providers/auth_provider.dart';
+import 'package:chat_app/providers/chat_user_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/route/app_route.gr.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+@RoutePage()
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -92,9 +101,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _login,
+                    onPressed: () {
+                      ref
+                          .read(authProvider.notifier)
+                          .signInWithEmail(
+                            _emailController.text,
+                            _passwordController.text,
+                          )
+                          .then((e) {
+                            if (e is Failure) {
+                              context.showSnackBar(e.toString());
+                            } else {
+                              final loggedInUser = ref.read(chatUserProvider);
+                              debugPrint(loggedInUser?.email);
+                            }
+                          });
+                    },
                     child: const Text('Login'),
                   ),
+                ),
+
+                TextButton(
+                  onPressed: () {
+                    context.router.replace(SignUpRoute());
+                  },
+                  child: Text('Sign Up'),
                 ),
               ],
             ),

@@ -101,6 +101,8 @@ class _AuthNotifier extends Notifier<AuthState> {
     state = state.copyWith(username: username);
   }
 
+  void setEmail(String email) {}
+
   void setLocation(String location) {
     state = state.copyWith(location: location);
   }
@@ -181,7 +183,7 @@ class _AuthNotifier extends Notifier<AuthState> {
 
     final newChatUser = ChatUser(
       id: user?.uid ?? "",
-      email: state.user?.email ?? '',
+      email: user?.email ?? '',
       username: state.username ?? '',
     );
 

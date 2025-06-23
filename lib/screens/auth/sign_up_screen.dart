@@ -1,10 +1,16 @@
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:chat_app/constants/extension_constants.dart';
+import 'package:chat_app/models/response.dart';
 import 'package:chat_app/providers/auth_provider.dart';
 import 'package:chat_app/providers/chat_user_provider.dart';
+import 'package:chat_app/route/app_route.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class SignUpScreen extends ConsumerStatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
   ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
@@ -93,33 +99,48 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        final response = ref
+                      onPressed: () async {
+                        ref
+                            .read(authProvider.notifier)
+                            .setUsername(_usernameController.text);
+
+                        ref
                             .read(authProvider.notifier)
                             .signUpWithEmail(
                               _emailController.text,
                               _passwordController.text,
                               _usernameController.text,
-                            );
-
-                        response
-                            .then((user) async {
-                              if (user != null) {
-                                // Save user data to Firestore
+                            )
+                            .then((e) async {
+                              if (e is Failure) {
+                                context.showSnackBar(e.toString());
+                              } else {
                                 final response =
                                     await ref
                                         .read(authProvider.notifier)
                                         .registerUserProfile();
+
+                                if (response?.data) {
+                                  context.showSnackBar(
+                                    'user saved successfully',
+                                  );
+                                } else {
+                                  context.showSnackBar(
+                                    'user saving process failed',
+                                  );
+                                }
                               }
-                            })
-                            .catchError((error) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error: $error')),
-                              );
                             });
                       },
                       child: const Text('Sign Up'),
                     ),
+                  ),
+
+                  TextButton(
+                    onPressed: () {
+                      context.router.replace(LoginRoute());
+                    },
+                    child: Text('Sign in'),
                   ),
                 ],
               ),
