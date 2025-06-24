@@ -6,8 +6,28 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes {
     return [
-      AutoRoute(page: LoginRoute.page, initial: true),
+      AutoRoute(page: LoginRoute.page),
       AutoRoute(page: SignUpRoute.page),
+      AutoRoute(page: SplashRoute.page, initial: true),
+
+      CustomRoute(
+        page: NavigationRoute.page,
+        // initial: true,
+        transitionsBuilder: TransitionsBuilders.fadeIn,
+        path: "/main",
+        children: [
+          CustomRoute(
+            page: ContactsRoute.page,
+            transitionsBuilder: TransitionsBuilders.fadeIn,
+            path: "chat",
+          ),
+          CustomRoute(
+            page: NewMessagesRoute.page,
+            transitionsBuilder: TransitionsBuilders.fadeIn,
+            path: "new_messages",
+          ),
+        ],
+      ),
     ];
   }
 }

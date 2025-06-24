@@ -110,7 +110,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           )
                           .then((e) {
                             if (e is Failure) {
-                              context.showSnackBar(e.toString());
+                              debugPrint(e.toString());
                             } else {
                               final loggedInUser = ref.read(chatUserProvider);
                               debugPrint(loggedInUser?.email);
