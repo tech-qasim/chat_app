@@ -1,5 +1,6 @@
 import 'package:chat_app/constants/firebase_constants.dart';
 import 'package:chat_app/models/chat_user.dart';
+import 'package:chat_app/models/contact.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseReferences {
@@ -13,6 +14,13 @@ class FirebaseReferences {
       .withConverter<ChatUser>(
         fromFirestore:
             (snapshot, _) => ChatUser.fromMap((snapshot.data() ?? {})),
+        toFirestore: (user, _) => user.toMap(),
+      );
+  CollectionReference<Contact> get contacts => firestore
+      .collection(FirebaseCollectionNames.chatUsers)
+      .withConverter<Contact>(
+        fromFirestore:
+            (snapshot, _) => Contact.fromMap((snapshot.data() ?? {})),
         toFirestore: (user, _) => user.toMap(),
       );
 }
