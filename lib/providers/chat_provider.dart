@@ -1,21 +1,25 @@
-import 'package:chat_app/repository/auth_repo.dart';
+import 'package:chat_app/models/response.dart';
+import 'package:chat_app/repository/contact_repo.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:chat_app/models/contact.dart';
 import 'package:chat_app/repository/user_repo.dart';
 import 'package:chat_app/utils/di.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
 
 class ChatState {
   bool isUsernameExists;
-  ChatState({required this.isUsernameExists});
+  List<Contact> contacts;
+  ChatState({required this.isUsernameExists, required this.contacts});
 
-  ChatState copyWith({bool? isUsernameExists}) {
+  ChatState copyWith({bool? isUsernameExists, List<Contact>? contacts}) {
     return ChatState(
       isUsernameExists: isUsernameExists ?? this.isUsernameExists,
+      contacts: contacts ?? this.contacts,
     );
   }
 
   factory ChatState.initial() {
-    return ChatState(isUsernameExists: false);
+    return ChatState(isUsernameExists: false, contacts: []);
   }
 }
 
@@ -40,6 +44,12 @@ class ChatNotifier extends Notifier<ChatState> {
     } else {
       state = state.copyWith(isUsernameExists: false);
     }
+  }
+
+  Future<void> fetchContacts() async {
+    final userRepo = getIt<ContactRepository>();
+    final response = await userRepo.fetchContacts();
+    state = state.copyWith(contacts: response.data);
   }
 }
 

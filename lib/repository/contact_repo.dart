@@ -8,7 +8,7 @@ class ContactRepository {
 
   ContactRepository({required this.firebaseReferences});
 
-  Future<Response<Contact?>> saveUser(Contact contact) async {
+  Future<Response<Contact?>> saveContact(Contact contact) async {
     try {
       await firebaseReferences.contacts
           .doc(contact.id)
@@ -17,6 +17,19 @@ class ContactRepository {
       return Success(data: contact);
     } catch (e) {
       return Failure(message: 'user saving failed : $e');
+    }
+  }
+
+  Future<Response<List<Contact>>> fetchContacts() async {
+    try {
+      final querySnapshot = await firebaseReferences.contacts.get();
+      final contacts =
+          querySnapshot.docs
+              .map((doc) => Contact.fromMap(doc.data() as Map<String, dynamic>))
+              .toList();
+      return Success(data: contacts);
+    } catch (e) {
+      return Failure(message: 'Failed to fetch contacts: $e');
     }
   }
 }
