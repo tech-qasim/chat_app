@@ -21,6 +21,26 @@ class UserRepository {
     }
   }
 
+  Future<bool> checkIfUsernameExistsInFirestore(String username) async {
+    try {
+      final querySnapshot =
+          await firebaseReferences.users
+              .where('username', isEqualTo: username)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        debugPrint('Username "$username" already exists.');
+        return true;
+      } else {
+        debugPrint('Username "$username" is available.');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('error while checking if the username exists or not : $e');
+      return false;
+    }
+  }
+
   Future<ChatUser?> fetchUser(String userId) async {
     try {
       final data = await firebaseReferences.users.doc(userId).get();
