@@ -2,7 +2,6 @@ import 'package:chat_app/models/chat_user.dart';
 import 'package:chat_app/models/response.dart';
 import 'package:chat_app/services/firebase_references.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 class UserRepository {
   final FirebaseReferences firebaseReferences;

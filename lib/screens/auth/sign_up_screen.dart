@@ -1,9 +1,7 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/constants/extension_constants.dart';
 import 'package:chat_app/models/response.dart';
 import 'package:chat_app/providers/auth_provider.dart';
-import 'package:chat_app/providers/chat_user_provider.dart';
 import 'package:chat_app/route/app_route.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -121,9 +119,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                                         .registerUserProfile();
 
                                 if (response?.data) {
-                                  context.showSnackBar(
-                                    'user saved successfully',
-                                  );
+                                  context.router.push(NavigationRoute());
                                 } else {
                                   context.showSnackBar(
                                     'user saving process failed',

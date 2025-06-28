@@ -1,5 +1,6 @@
-import 'package:chat_app/models/response.dart';
+import 'package:chat_app/models/message.dart';
 import 'package:chat_app/providers/chat_user_provider.dart';
+import 'package:chat_app/repository/chat_repo.dart';
 import 'package:chat_app/repository/contact_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,8 +58,29 @@ class ChatNotifier extends Notifier<ChatState> {
     state = state.copyWith(contacts: response.data);
   }
 
+  Stream<List<Message>> getMessages(String chatId) {
+    final messages = getIt<ChatRepo>().getMessages(chatId);
+    return messages;
+  }
+
+  void sendMessage(String content, String receiverId) async {
+    final currentUser = ref.read(chatUserProvider)?.id ?? '';
+    final chatRoom = "${currentUser}_$receiverId";
+    final message = Message(
+      id: Uuid().v4(),
+      senderId: currentUser,
+      receiverId: receiverId,
+      content: content,
+    );
+    await getIt<ChatRepo>().sendMessage(message, chatRoom);
+  }
+
   Future<void> addContact(String username) async {
     if (state.isUsernameExists == true) {
+      if (state.contacts.any((contact) => contact.contactName == username)) {
+        return;
+      }
+
       final user = await getIt<UserRepository>().fetchUserByUsername(username);
       final currentChatUser = ref.read(chatUserProvider)?.id;
 
@@ -71,7 +93,7 @@ class ChatNotifier extends Notifier<ChatState> {
 
       final response = await getIt<ContactRepository>().saveContact(newContact);
 
-      if (response.data) {
+      if (response.data != null) {
         state = state.copyWith(contacts: [...state.contacts, newContact]);
       }
     } else {

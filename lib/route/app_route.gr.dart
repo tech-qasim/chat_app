@@ -18,21 +18,53 @@ import 'package:chat_app/screens/navigation/navigation_screen.dart' as _i4;
 import 'package:chat_app/screens/new_messages/new_messages_screen.dart' as _i5;
 import 'package:chat_app/screens/profile/profile_screen.dart' as _i6;
 import 'package:chat_app/screens/splash/splash_screen.dart' as _i8;
+import 'package:flutter/material.dart' as _i10;
 
 /// generated route for
 /// [_i1.ChatScreen]
-class ChatRoute extends _i9.PageRouteInfo<void> {
-  const ChatRoute({List<_i9.PageRouteInfo>? children})
-    : super(ChatRoute.name, initialChildren: children);
+class ChatRoute extends _i9.PageRouteInfo<ChatRouteArgs> {
+  ChatRoute({
+    _i10.Key? key,
+    required String receiverId,
+    List<_i9.PageRouteInfo>? children,
+  }) : super(
+         ChatRoute.name,
+         args: ChatRouteArgs(key: key, receiverId: receiverId),
+         initialChildren: children,
+       );
 
   static const String name = 'ChatRoute';
 
   static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
-      return const _i1.ChatScreen();
+      final args = data.argsAs<ChatRouteArgs>();
+      return _i1.ChatScreen(key: args.key, receiverId: args.receiverId);
     },
   );
+}
+
+class ChatRouteArgs {
+  const ChatRouteArgs({this.key, required this.receiverId});
+
+  final _i10.Key? key;
+
+  final String receiverId;
+
+  @override
+  String toString() {
+    return 'ChatRouteArgs{key: $key, receiverId: $receiverId}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChatRouteArgs) return false;
+    return key == other.key && receiverId == other.receiverId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ receiverId.hashCode;
 }
 
 /// generated route for

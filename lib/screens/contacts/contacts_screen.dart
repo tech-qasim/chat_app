@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/constants/extension_constants.dart';
 import 'package:chat_app/providers/chat_provider.dart';
+import 'package:chat_app/route/app_route.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +100,12 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
         itemCount: contacts.length,
         itemBuilder: (context, index) {
           final contact = contacts[index];
-          return ListTile(title: Text(contact.contactName));
+          return ListTile(
+            title: Text(contact.contactName),
+            onTap: () {
+              context.router.push(ChatRoute(receiverId: contact.id));
+            },
+          );
         },
       ),
     );

@@ -1,7 +1,6 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/constants/extension_constants.dart';
-import 'package:chat_app/models/chat_user.dart';
 import 'package:chat_app/providers/auth_provider.dart';
 import 'package:chat_app/providers/chat_user_provider.dart';
 import 'package:chat_app/route/app_route.gr.dart';

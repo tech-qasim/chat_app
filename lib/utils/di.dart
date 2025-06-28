@@ -1,4 +1,5 @@
 import 'package:chat_app/repository/auth_repo.dart';
+import 'package:chat_app/repository/chat_repo.dart';
 import 'package:chat_app/repository/contact_repo.dart';
 import 'package:chat_app/repository/user_repo.dart';
 import 'package:chat_app/services/firebase_references.dart';
@@ -26,6 +27,9 @@ void setupDependecyInjector() {
   );
   getIt.registerLazySingleton<ContactRepository>(
     () => ContactRepository(firebaseReferences: getIt<FirebaseReferences>()),
+  );
+  getIt.registerLazySingleton<ChatRepo>(
+    () => ChatRepo(firebaseReferences: getIt<FirebaseReferences>()),
   );
 
   getIt.registerLazySingleton<FirebaseReferences>(

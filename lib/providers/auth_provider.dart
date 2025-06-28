@@ -7,10 +7,7 @@ import 'package:chat_app/repository/auth_repo.dart';
 import 'package:chat_app/repository/user_repo.dart';
 import 'package:chat_app/utils/di.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthState {
   final User? user;
