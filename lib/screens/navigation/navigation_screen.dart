@@ -18,7 +18,7 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
   Widget build(BuildContext context) {
     return AutoTabsRouter(
       navigatorObservers: () => [HeroController()],
-      routes: const [ContactsRoute(), NewMessagesRoute()],
+      routes: const [ContactsRoute(), NewMessagesRoute(), ProfileRoute()],
       builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
         final selectedIndex = tabsRouter.activeIndex;
@@ -115,6 +115,14 @@ class BottomNavigationWidget extends StatelessWidget {
                 ),
                 icon: Icon(Icons.chat_bubble_outline_outlined),
                 label: 'New messages',
+              ),
+              BottomNavigationBarItem(
+                activeIcon: Padding(
+                  padding: EdgeInsets.only(right: 0),
+                  child: Icon(Icons.people),
+                ),
+                icon: Icon(Icons.people),
+                label: 'Profile',
               ),
             ],
             onTap: onItemSelected,

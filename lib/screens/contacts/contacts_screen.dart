@@ -13,10 +13,18 @@ class ContactsScreen extends ConsumerStatefulWidget {
 }
 
 class _ContactsScreenState extends ConsumerState<ContactsScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(chatProvider.notifier).fetchContacts();
+    });
+    super.initState();
+  }
+
   final textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final isUserExists = ref.watch(chatProvider).isUsernameExists;
+    final contacts = ref.watch(chatProvider).contacts;
     return Scaffold(
       appBar: AppBar(title: Text('Contacts')),
       floatingActionButton: FloatingActionButton(
@@ -24,13 +32,13 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
           showDialog(
             context: context,
             builder:
-                (context) => AlertDialog(
-                  title: Text('Add Contact'),
-                  content: Consumer(
-                    builder: (context, ref, child) {
-                      final isUsernameExists =
-                          ref.watch(chatProvider).isUsernameExists;
-                      return Column(
+                (context) => Consumer(
+                  builder: (context, ref, child) {
+                    final isUsernameExists =
+                        ref.watch(chatProvider).isUsernameExists;
+                    return AlertDialog(
+                      title: Text('Add Contact'),
+                      content: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,27 +68,38 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
                                 ),
                               ),
                         ],
-                      );
-                    },
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text('Close'),
-                    ),
-                    TextButton(
-                      onPressed: isUserExists ? () {} : null,
-                      child: Text('Add'),
-                    ),
-                  ],
+                      ),
+
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('Close'),
+                        ),
+                        TextButton(
+                          onPressed:
+                              isUsernameExists
+                                  ? () {
+                                    ref
+                                        .read(chatProvider.notifier)
+                                        .addContact(textController.text);
+                                  }
+                                  : null,
+                          child: Text('Add'),
+                        ),
+                      ],
+                    );
+                  },
                 ),
           );
         },
         child: Icon(Icons.add),
       ),
-      body: Column(children: [
-          
-        ],
+      body: ListView.builder(
+        itemCount: contacts.length,
+        itemBuilder: (context, index) {
+          final contact = contacts[index];
+          return ListTile(title: Text(contact.contactName));
+        },
       ),
     );
   }

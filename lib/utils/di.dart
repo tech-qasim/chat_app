@@ -1,4 +1,5 @@
 import 'package:chat_app/repository/auth_repo.dart';
+import 'package:chat_app/repository/contact_repo.dart';
 import 'package:chat_app/repository/user_repo.dart';
 import 'package:chat_app/services/firebase_references.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +23,9 @@ void setupDependecyInjector() {
   getIt.registerLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
   getIt.registerLazySingleton<UserRepository>(
     () => UserRepository(firebaseReferences: getIt<FirebaseReferences>()),
+  );
+  getIt.registerLazySingleton<ContactRepository>(
+    () => ContactRepository(firebaseReferences: getIt<FirebaseReferences>()),
   );
 
   getIt.registerLazySingleton<FirebaseReferences>(

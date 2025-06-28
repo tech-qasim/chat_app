@@ -17,10 +17,10 @@ class FirebaseReferences {
         toFirestore: (user, _) => user.toMap(),
       );
   CollectionReference<Contact> get contacts => firestore
-      .collection(FirebaseCollectionNames.chatUsers)
+      .collection(FirebaseCollectionNames.contacts)
       .withConverter<Contact>(
         fromFirestore:
             (snapshot, _) => Contact.fromMap((snapshot.data() ?? {})),
-        toFirestore: (user, _) => user.toMap(),
+        toFirestore: (contact, _) => contact.toMap(),
       );
 }

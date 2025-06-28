@@ -1,14 +1,18 @@
 import 'package:chat_app/models/response.dart';
+import 'package:chat_app/providers/chat_user_provider.dart';
 import 'package:chat_app/repository/contact_repo.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:chat_app/models/contact.dart';
 import 'package:chat_app/repository/user_repo.dart';
 import 'package:chat_app/utils/di.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatState {
   bool isUsernameExists;
   List<Contact> contacts;
+
   ChatState({required this.isUsernameExists, required this.contacts});
 
   ChatState copyWith({bool? isUsernameExists, List<Contact>? contacts}) {
@@ -48,8 +52,31 @@ class ChatNotifier extends Notifier<ChatState> {
 
   Future<void> fetchContacts() async {
     final userRepo = getIt<ContactRepository>();
-    final response = await userRepo.fetchContacts();
+    final currentChatUser = ref.read(chatUserProvider)?.id;
+    final response = await userRepo.fetchContacts(currentChatUser ?? "");
     state = state.copyWith(contacts: response.data);
+  }
+
+  Future<void> addContact(String username) async {
+    if (state.isUsernameExists == true) {
+      final user = await getIt<UserRepository>().fetchUserByUsername(username);
+      final currentChatUser = ref.read(chatUserProvider)?.id;
+
+      final newContact = Contact(
+        id: Uuid().v4(),
+        ownerId: currentChatUser ?? '',
+        contactUserId: user?.id ?? '',
+        contactName: user?.username ?? '',
+      );
+
+      final response = await getIt<ContactRepository>().saveContact(newContact);
+
+      if (response.data) {
+        state = state.copyWith(contacts: [...state.contacts, newContact]);
+      }
+    } else {
+      debugPrint('user does not exist so i cannot add');
+    }
   }
 }
 

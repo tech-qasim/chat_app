@@ -114,6 +114,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             } else {
                               final loggedInUser = ref.read(chatUserProvider);
                               debugPrint(loggedInUser?.email);
+
+                              context.router.replace(NavigationRoute());
                             }
                           });
                     },

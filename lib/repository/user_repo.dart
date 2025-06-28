@@ -41,6 +41,26 @@ class UserRepository {
     }
   }
 
+  Future<ChatUser?> fetchUserByUsername(String username) async {
+    try {
+      final querySnapshot =
+          await firebaseReferences.users
+              .where('username', isEqualTo: username)
+              .limit(1)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first.data();
+      } else {
+        debugPrint('No user found with username: $username');
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error fetching user by username: $e');
+      return null;
+    }
+  }
+
   Future<ChatUser?> fetchUser(String userId) async {
     try {
       final data = await firebaseReferences.users.doc(userId).get();

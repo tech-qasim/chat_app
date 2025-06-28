@@ -26,6 +26,11 @@ class AppRouter extends RootStackRouter {
             transitionsBuilder: TransitionsBuilders.fadeIn,
             path: "new_messages",
           ),
+          CustomRoute(
+            page: ProfileRoute.page,
+            transitionsBuilder: TransitionsBuilders.fadeIn,
+            path: "profile",
+          ),
         ],
       ),
     ];
