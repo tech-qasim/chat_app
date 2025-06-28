@@ -71,6 +71,7 @@ class ChatNotifier extends Notifier<ChatState> {
       senderId: currentUser,
       receiverId: receiverId,
       content: content,
+      timestamp: DateTime.now(),
     );
     await getIt<ChatRepo>().sendMessage(message, chatRoom);
   }

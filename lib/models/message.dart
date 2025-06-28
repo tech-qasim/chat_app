@@ -5,6 +5,7 @@ class Message {
   final String senderId;
   final String receiverId;
   final String content;
+  final DateTime timestamp;
   final bool isRead;
 
   Message({
@@ -12,6 +13,7 @@ class Message {
     required this.senderId,
     required this.receiverId,
     required this.content,
+    required this.timestamp,
     this.isRead = false,
   });
 
@@ -20,6 +22,7 @@ class Message {
     String? senderId,
     String? receiverId,
     String? content,
+    DateTime? timestamp,
     bool? isRead,
   }) {
     return Message(
@@ -27,6 +30,7 @@ class Message {
       senderId: senderId ?? this.senderId,
       receiverId: receiverId ?? this.receiverId,
       content: content ?? this.content,
+      timestamp: timestamp ?? this.timestamp,
       isRead: isRead ?? this.isRead,
     );
   }
@@ -38,6 +42,7 @@ class Message {
     result.addAll({'senderId': senderId});
     result.addAll({'receiverId': receiverId});
     result.addAll({'content': content});
+    result.addAll({'timestamp': timestamp.millisecondsSinceEpoch});
     result.addAll({'isRead': isRead});
 
     return result;
@@ -49,6 +54,7 @@ class Message {
       senderId: map['senderId'] ?? '',
       receiverId: map['receiverId'] ?? '',
       content: map['content'] ?? '',
+      timestamp: DateTime.fromMillisecondsSinceEpoch(map['timestamp']),
       isRead: map['isRead'] ?? false,
     );
   }
@@ -60,7 +66,7 @@ class Message {
 
   @override
   String toString() {
-    return 'Message(id: $id, senderId: $senderId, receiverId: $receiverId, content: $content, isRead: $isRead)';
+    return 'Message(id: $id, senderId: $senderId, receiverId: $receiverId, content: $content, timestamp: $timestamp, isRead: $isRead)';
   }
 
   @override
@@ -72,6 +78,7 @@ class Message {
         other.senderId == senderId &&
         other.receiverId == receiverId &&
         other.content == content &&
+        other.timestamp == timestamp &&
         other.isRead == isRead;
   }
 
@@ -81,6 +88,7 @@ class Message {
         senderId.hashCode ^
         receiverId.hashCode ^
         content.hashCode ^
+        timestamp.hashCode ^
         isRead.hashCode;
   }
 }

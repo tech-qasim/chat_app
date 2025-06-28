@@ -1,6 +1,5 @@
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/services/firebase_references.dart';
-import 'package:flutter/cupertino.dart';
 
 class ChatRepo {
   final FirebaseReferences firebaseReferences;
@@ -9,6 +8,7 @@ class ChatRepo {
   Stream<List<Message>> getMessages(String chatRoom) {
     return firebaseReferences
         .chats(chatRoom)
+        .orderBy('timestamp')
         .snapshots()
         .map(
           (snapshot) =>
