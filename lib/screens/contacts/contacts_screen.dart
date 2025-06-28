@@ -103,7 +103,7 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
           return ListTile(
             title: Text(contact.contactName),
             onTap: () {
-              context.router.push(ChatRoute(receiverId: contact.id));
+              context.router.push(ChatRoute(receiverId: contact.contactUserId));
             },
           );
         },

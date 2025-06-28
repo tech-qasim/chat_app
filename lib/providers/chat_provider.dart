@@ -65,7 +65,7 @@ class ChatNotifier extends Notifier<ChatState> {
 
   void sendMessage(String content, String receiverId) async {
     final currentUser = ref.read(chatUserProvider)?.id ?? '';
-    final chatRoom = "${currentUser}_$receiverId";
+    final chatRoom = getChatRoomId(currentUser, receiverId);
     final message = Message(
       id: Uuid().v4(),
       senderId: currentUser,
@@ -74,6 +74,17 @@ class ChatNotifier extends Notifier<ChatState> {
       timestamp: DateTime.now(),
     );
     await getIt<ChatRepo>().sendMessage(message, chatRoom);
+  }
+
+  String getChatRoomId(String userId1, String userId2) {
+    // Put the IDs in a list
+    List<String> ids = [userId1, userId2];
+
+    // Sort the list lexicographically to ensure consistent order
+    ids.sort();
+
+    // Join with underscore and return
+    return '${ids[0]}_${ids[1]}';
   }
 
   Future<void> addContact(String username) async {

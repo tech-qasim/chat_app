@@ -20,7 +20,7 @@ class AppRouter extends RootStackRouter {
           CustomRoute(
             page: ContactsRoute.page,
             transitionsBuilder: TransitionsBuilders.fadeIn,
-            path: "chat",
+            path: "contacts",
           ),
           CustomRoute(
             page: NewMessagesRoute.page,
