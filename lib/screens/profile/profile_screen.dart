@@ -22,7 +22,9 @@ class ProfileScreen extends ConsumerWidget {
             CircleAvatar(
               radius: 40,
               child: Text(
-                loggedInUser ?? '',
+                (loggedInUser != null && loggedInUser.isNotEmpty)
+                    ? loggedInUser[0].toUpperCase()
+                    : '',
                 style: context.textTheme.bodyMedium?.copyWith(fontSize: 32),
               ),
             ),

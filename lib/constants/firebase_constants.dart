@@ -3,4 +3,5 @@ class FirebaseCollectionNames {
   static const String contacts = 'contacts';
   static const String messages = 'messages';
   static const String chats = 'chats';
+  static const String chatCollection = 'chatCollection';
 }

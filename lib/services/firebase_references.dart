@@ -24,6 +24,7 @@ class FirebaseReferences {
             (snapshot, _) => Contact.fromMap((snapshot.data() ?? {})),
         toFirestore: (contact, _) => contact.toMap(),
       );
+
   CollectionReference<Message> chats(String chatRoom) {
     return firestore
         .collection(FirebaseCollectionNames.chats)
@@ -34,5 +35,9 @@ class FirebaseReferences {
               (snapshot, _) => Message.fromMap((snapshot.data() ?? {})),
           toFirestore: (msg, _) => msg.toMap(),
         );
+  }
+
+  CollectionReference get chatCollection {
+    return firestore.collection(FirebaseCollectionNames.chats);
   }
 }

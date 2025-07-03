@@ -112,6 +112,19 @@ class ChatNotifier extends Notifier<ChatState> {
       debugPrint('user does not exist so i cannot add');
     }
   }
+
+  Future<void> markMessagesAsRead(String chatRoom, String userId) async {
+    final currentChatUser = ref.read(chatUserProvider)?.id;
+    await getIt<ChatRepo>().markMessageAsRead(chatRoom, currentChatUser ?? '');
+  }
+
+  Stream<List<Contact>> getContactsWithUnreadMessages() {
+    final currentChatUser = ref.read(chatUserProvider)?.id;
+    final contacts = getIt<ChatRepo>().getContactsWithUnreadMessages(
+      currentChatUser ?? '',
+    );
+    return contacts;
+  }
 }
 
 final chatProvider = NotifierProvider<ChatNotifier, ChatState>(

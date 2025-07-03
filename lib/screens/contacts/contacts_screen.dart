@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:chat_app/constants/extension_constants.dart';
 import 'package:chat_app/providers/chat_provider.dart';
+import 'package:chat_app/providers/chat_user_provider.dart';
 import 'package:chat_app/route/app_route.gr.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_route/annotations.dart';
@@ -27,6 +28,7 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
   @override
   Widget build(BuildContext context) {
     final contacts = ref.watch(chatProvider).contacts;
+    final currentUser = ref.watch(chatUserProvider);
     return Scaffold(
       appBar: AppBar(title: Text('Contacts')),
       floatingActionButton: FloatingActionButton(
@@ -103,6 +105,12 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
           return ListTile(
             title: Text(contact.contactName),
             onTap: () {
+              final chatRoom = ref
+                  .read(chatProvider.notifier)
+                  .getChatRoomId(currentUser?.id ?? '', contact.contactUserId);
+              ref
+                  .read(chatProvider.notifier)
+                  .markMessagesAsRead(chatRoom, currentUser?.id ?? '');
               context.router.push(ChatRoute(receiverId: contact.contactUserId));
             },
           );
