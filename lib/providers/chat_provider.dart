@@ -1,3 +1,4 @@
+import 'package:chat_app/models/chat_room.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/providers/chat_user_provider.dart';
 import 'package:chat_app/repository/chat_repo.dart';
@@ -65,13 +66,18 @@ class ChatNotifier extends Notifier<ChatState> {
 
   void sendMessage(String content, String receiverId) async {
     final currentUser = ref.read(chatUserProvider)?.id ?? '';
-    final chatRoom = getChatRoomId(currentUser, receiverId);
+    final chatRoomString = getChatRoomId(currentUser, receiverId);
     final message = Message(
       id: Uuid().v4(),
       senderId: currentUser,
       receiverId: receiverId,
       content: content,
       timestamp: DateTime.now(),
+    );
+    final chatRoom = ChatRoom(
+      chatRoom: chatRoomString,
+      senderId: currentUser,
+      receiverId: receiverId,
     );
     await getIt<ChatRepo>().sendMessage(message, chatRoom);
   }

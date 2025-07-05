@@ -19,9 +19,6 @@ class NewMessagesScreen extends ConsumerStatefulWidget {
 class _NewMessagesState extends ConsumerState<NewMessagesScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(chatProvider.notifier).getContactsWithUnreadMessages();
-    });
     super.initState();
   }
 

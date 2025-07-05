@@ -1,6 +1,9 @@
+import 'package:chat_app/models/chat_room.dart';
 import 'package:chat_app/models/contact.dart';
 import 'package:chat_app/models/message.dart';
+import 'package:chat_app/repository/contact_repo.dart';
 import 'package:chat_app/services/firebase_references.dart';
+import 'package:chat_app/utils/di.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -38,9 +41,18 @@ class ChatRepo {
         );
   }
 
-  Future<void> sendMessage(Message message, String chatId) async {
+  Future<void> setChatRoom(ChatRoom chatRoom) async {
     try {
-      await firebaseReferences.chats(chatId).add(message);
+      await firebaseReferences.chatRoom(chatRoom.chatRoom).set(chatRoom);
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> sendMessage(Message message, ChatRoom chatRoom) async {
+    try {
+      setChatRoom(chatRoom);
+      await firebaseReferences.chats(chatRoom.chatRoom).add(message);
     } on Exception catch (e) {
       print(e.toString());
     }
@@ -63,47 +75,71 @@ class ChatRepo {
   //   }
   // }
 
-  Future<Object> getAllChats() async {
-    try {
-      return FirebaseFirestore.instance
-          .collection('chats')
-          .snapshots()
-          .map(
-            (snapshot) => snapshot.docs.map((doc) {
-              print(doc.toString());
-            }),
-          );
-    } catch (e) {
-      print('Error reading chats: $e');
-      return [];
-    }
-  }
+  // Future<List<String>> getAllChats() async {
+  //   print('hello world');
+  //   try {
+  //     final snapshot =
+  //         await FirebaseFirestore.instance.collection('chats').get();
+
+  //     print('control not accepted');
+
+  //     List<String> chatIds = [];
+
+  //     for (var chatDoc in snapshot.docs) {
+  //       final docRef = FirebaseFirestore.instance
+  //           .collection('chats')
+  //           .doc(chatDoc.id);
+  //       final docSnapshot = await docRef.get();
+
+  //       if (!docSnapshot.exists) {
+  //         print('Italic Document: ${chatDoc.id}');
+
+  //         // Read subcollection (e.g., messages)
+  //         final messagesSnapshot = await docRef.collection('messages').get();
+  //         for (var messageDoc in messagesSnapshot.docs) {
+  //           print('  Message from ${chatDoc.id}: ${messageDoc.data()}');
+  //         }
+  //       }
+  //     }
+
+  //     print('chatIds : $chatIds');
+  //     return chatIds;
+  //   } catch (e) {
+  //     print('Error reading chats: $e');
+  //     return [];
+  //   }
+  // }
 
   Stream<List<Contact>> getContactsWithUnreadMessages(String currentUserId) {
-    return firebaseReferences.chatCollection.snapshots().asyncMap((
-      snapshot,
-    ) async {
+    final chatCollection = FirebaseFirestore.instance.collection('chats');
+
+    return chatCollection.snapshots().asyncMap((snapshot) async {
       Set<String> contactIds = {};
 
-      for (var doc in snapshot.docs) {
-        final messagesSnapshot =
-            await doc.reference
+      for (var chatDoc in snapshot.docs) {
+        final messagesQuery =
+            await chatDoc.reference
                 .collection('messages')
                 .where('receiverId', isEqualTo: currentUserId)
                 .where('isRead', isEqualTo: false)
                 .get();
 
-        for (var msg in messagesSnapshot.docs) {
-          contactIds.add(msg['senderId'] as String);
+        for (var msg in messagesQuery.docs) {
+          final senderId = msg['senderId'] as String;
+          contactIds.add(senderId);
         }
       }
 
-      // Fetch Contact objects for each contactId
+      final ids = contactIds.toList();
+
       List<Contact> contacts = [];
-      for (var id in contactIds) {
-        final contactDoc = await firebaseReferences.contacts.doc(id).get();
-        if (contactDoc.exists) {
-          contacts.add(Contact.fromMap((contactDoc.data()?.toMap() ?? {})));
+
+      for (var id in ids) {
+        final contactSnapshot = await getIt<ContactRepository>()
+            .getContactByUserId(id);
+        final contactData = contactSnapshot.data;
+        if (contactData != null) {
+          contacts.add(contactData);
         }
       }
 

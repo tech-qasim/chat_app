@@ -33,16 +33,21 @@ class ContactRepository {
       debugPrint("Error fetching user categories: $e");
       return Failure(message: e.toString());
     }
+  }
 
-    // try {
-    //   final querySnapshot = await firebaseReferences.contacts.get();
-    //   final contacts =
-    //       querySnapshot.docs
-    //           .map((doc) => Contact.fromMap(doc.data() as Map<String, dynamic>))
-    //           .toList();
-    //   return Success(data: contacts);
-    // } catch (e) {
-    //   return Failure(message: 'Failed to fetch contacts: $e');
-    // }
+  Future<Response<Contact?>> getContactByUserId(String contactUserId) async {
+    try {
+      final query =
+          await firebaseReferences.contacts
+              .where('contactUserId', isEqualTo: contactUserId)
+              .get();
+      if (query.docs.isNotEmpty) {
+        return Success(data: query.docs.first.data());
+      } else {
+        return Failure(message: 'Contact not found');
+      }
+    } catch (e) {
+      return Failure(message: 'Failed to fetch contact: $e');
+    }
   }
 }
