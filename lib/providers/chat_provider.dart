@@ -136,3 +136,8 @@ class ChatNotifier extends Notifier<ChatState> {
 final chatProvider = NotifierProvider<ChatNotifier, ChatState>(
   ChatNotifier.new,
 );
+
+final unreadContactsProvider = StreamProvider<List<Contact>>((ref) {
+  final chatNotifier = ref.read(chatProvider.notifier);
+  return chatNotifier.getContactsWithUnreadMessages();
+});

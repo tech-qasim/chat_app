@@ -21,6 +21,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final currentUser = ref.watch(chatUserProvider)?.id;
+
     final chatRoom = ref
         .watch(chatProvider.notifier)
         .getChatRoomId(currentUser ?? '', widget.receiverId);
